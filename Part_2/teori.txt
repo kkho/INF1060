@@ -1,0 +1,75 @@
+	You have the following code:
+
+	  void function( int a, int* b, char c, char* d, char e[] )
+	  {
+	      a  = 2;
+	      *b = 3;
+	      b  = &a;
+	      c  = 'x';
+	      *d = 'y';
+	      d  = &c;
+	      e[2] = 'z';
+	  }
+
+	  int main( )
+	  {
+	      int   k,l;
+	      int*  m;
+	      char  n,o;
+	      char* p;
+	      char  q[5];
+
+	      k = 100;
+	      l = 101;
+	      m = &l;
+	      n = 'n';
+	      o = 'o';
+	      p = &o;
+	      q[0] = 'h';
+	      q[1] = 'e';
+	      q[2] = 'r';
+	      q[3] = 'e';
+	      q[4] = '\0';
+
+	      function( k,m,n,p,q );
+
+	      printf( "k=%d l=%d *m=%d\n", k, l, *m );
+	      printf( "n=%c o=%c *p=%c\n", n, o, *p );
+	      printf( "q=%s\n", q );
+	  }
+
+	What is printed onto the screen?
+	Why?
+
+
+
+
+
+
+
+
+Solution:
+	This is printed:
+
+		k=100 l=3 *m=3
+		n=n o=y *p=y
+		q=heze
+
+	When function is called, it receives _copies_ of the values
+	k, m, n, and p, and a pointer to the array q.
+
+	(1) Because a and b are copies, k and n remain unchanged.
+	(2) For m and p, on the other hand, function does at first not
+	    try to change m and p themselves, but the places that they
+	    point to. They point to the actual variables l and o, not to
+	    copies. So, l and o are changed.
+	(3) After that, function changes b and d, which are only copies
+	    of m and p, so m and p are not changed.
+	(4) The name of an array is always a pointer to the array. So,
+	    when function is called with the paramter q, e becomes also
+	    a pointer to the array q. That means that it can also change
+	    the contents of the array. And that's what it does.
+
+
+
+

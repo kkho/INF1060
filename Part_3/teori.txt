@@ -1,0 +1,182 @@
+You have the following code:
+
+	  void funA( char buf[10] )
+	  {
+	      int i;
+	      for( i=0; i<10; i++ )
+	      {
+		  buf[i] = 'a' + i;
+	      }
+	  }
+
+	  void funB( char* buf )
+	  {
+	      int i;
+	      for( i=0; i<10; i++ )
+	      {
+		  buf[i] = 'b' + i;
+	      }
+	  }
+
+	  void funC( char* buf )
+	  {
+	      int i;
+	      for( i=0; i<10; i++ )
+	      {
+		  *buf = 'c' + i;
+		  buf = buf + 1;
+	      }
+	  }
+
+          int main( )
+          {
+                char buf[11];
+                memset( buf, 0, 11 );
+                funA( buf );
+                printf( "%s\n", buf );
+                funB( buf );
+                printf( "%s\n", buf );
+                funC( buf );
+                printf( "%s\n", buf );
+          }
+	What is the output?
+	Why?
+
+
+
+
+The output is:
+
+	  abcdefghij
+	  bcdefghijk
+	  cdefghijkl
+
+	First of all, the character 'a' is identical to the number 97,
+	and the rest of the alphabet follows, 'b' is 98, and so on.
+	This means that you can say that 'c' == 'a' + 2.
+
+	Second, funA and funB are semantically identical because we
+	have already said that array names are only pointer to their
+	first element anyway. So clearly, char buf[10] and char* buf
+	are essentially the same thing.
+
+	funC shows that you can do something more with pointers. You
+	can change them. This is called pointer arithmetics. You can even
+	use them the following way:
+
+	  void funD( char* buf )
+	  {
+	      int i;
+	      for( i=0; i<10; i++ )
+	      {
+		  *(buf+i) = 'c' + i;
+	      }
+	  }
+
+	The C book by its inventors Kernighan and Ritchie clarifies why
+	this works. They say that
+	  &buf[3] is only a transformation of buf+3
+	and
+	  buf[3] is a transformation of *(buf+3)
+	So, "*(buf+3)" is the original version, and buf[3] has been
+	introduced into the C language to make it _easier_ for us to
+	understand what is going on.
+
+
+
+
+
+
+	You have the following variable:
+
+        char* apple = "                     a\n"
+                      "                    ppl\n"
+                      "                  eappl\n"
+                      "                 eapple\n"
+                      "                 apple\n"
+                      "                 appl\n"
+                      "         eappleappleappleappl\n"
+                      "     eappleappleappleappleapple\n"
+                      "   appleappleappleappleappleapple\n"
+                      "  appleappleappleappleappleappleappl\n"
+                      " eappleappleappleappleappleappleapple\n"
+                      "appleappleappleappleappleappleappleapp\n"
+                      "leappleappleappleappleappleappleapplea\n"
+                      "ppleappleappleappleappleappleappleappl\n"
+                      "eappleappleappleappleappleappleappleap\n"
+                      "pleappleappleappleappleappleappleapple\n"
+                      "appleappleappleappleappleappleappleapp\n"
+                      "leappleappleappleappwormpleappleapplea\n"
+                      " ppleappleappleappleappleappleappleap\n"
+                      "  pleappleappleappleappleappleapplea\n"
+                      "   ppleappleappleappleappleappleapp\n"
+                      "    leappleappleappleappleappleap\n"
+                      "      pleappleappleappleappleapp\n"
+                      "        leappleappleappleapple\n"
+                      "          appleappleappleapp\n";
+
+	(Yes, this string can be copied and pasted into your program,
+	 although it is longer than one line)
+	How long is the string?
+
+	How many bytes would you have to allocate with malloc if you
+	wanted to make a copy?
+
+
+
+
+Solution:
+	822
+	823
+
+
+Try to find the "worm" in the apple in several ways:
+	- Using no C functions at all, basic language operations such
+	  as if/else, for, while, do, and so on
+	- Make your search function a bit simpler by using one the
+	  C function strchr()
+	- Make your search a lot easier by using the C function
+	  strstr()
+	Cut the worm out of the apple by overwriting it with space
+	characters "    ". Remember that you must #include <string.h>
+	to use strchr() and strstr().
+
+
+These are rather short answers that make use of the knowledge
+	that the worm is in the apple, and that there is no other w in
+	it. They are legal answers, but more sophisticated answers would
+	be appreciated.
+
+	int main() {
+	  int i = 0;
+	  while( apple[i] != 'w' ) i++;
+	  for( j=0; j<4; j++ ) apple[i+j] = ' ';
+	}
+
+	int main() {
+	  int i = 0;
+	  char* c = strchr(apple,'w');
+	  for( j=0; j<4; j++ ) c[j] = ' ';
+	}
+
+	int main() {
+	  int i = 0;
+	  char* c = strstr(apple,"worm");
+	  for( j=0; j<4; j++ ) c[j] = ' ';
+	}
+
+
+How deep in the apple is the worm? (What is the index of the
+	character 'w' of the word "worm").
+	Use the strstr() function to find the answer!
+
+
+565
+
+	The easiest way to figure this out is to:
+	  #include <string.h>
+	  ...
+	  int x;
+	  ...
+          x = strstr(apple,"worm") - apple;
+
