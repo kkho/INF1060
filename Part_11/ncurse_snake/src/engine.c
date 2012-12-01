@@ -21,7 +21,7 @@
  *
  *  @note 1,000,000 microseconds == 1 second
  */
-#define   REFRESH_DELAY     (20000 + ((9 - game.level) * 25000))
+#define   REFRESH_DELAY     (50000 + ((9 - game.level) * 25000))
 
 
 
